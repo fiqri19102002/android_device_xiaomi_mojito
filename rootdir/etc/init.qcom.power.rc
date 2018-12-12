@@ -32,6 +32,9 @@ on enable-low-power
 on property:sys.boot_completed=1
     trigger enable-low-power
 
+    # Enable EAS
+    write /sys/kernel/debug/sched_features ENERGY_AWARE
+
     # Runtime fs tuning
     write /sys/block/sda/queue/nr_requests 128
     write /sys/block/sda/queue/iostats 1
@@ -59,6 +62,9 @@ on property:sys.boot_completed=1
     write /dev/blkio/background/blkio.group_idle 0
 
 on early-init
+     # Disable EAS
+    write /sys/kernel/debug/sched_features NO_ENERGY_AWARE
+
     # configure governor settings
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil
     write /sys/devices/system/cpu/cpu0/cpufreq/schedutil/up_rate_limit_us 500
