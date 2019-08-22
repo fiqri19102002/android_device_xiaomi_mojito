@@ -666,4 +666,8 @@
          Setting this to track config_displayWhiteBalanceColorTemperatureDefault (currently 6500K). -->
     <integer name="config_nightDisplayColorTemperatureMax">6500</integer>
 
+    <!-- Default color temperature, in Kelvin, to tint the screen when Night display is
+         activated. -->
+    <integer name="config_nightDisplayColorTemperatureDefault">3339</integer>
+
 </resources>
