@@ -20,6 +20,7 @@ allow hal_power_default {
   sysfs_msm_subsys
   vendor_sysfs_scsi_host
   sysfs_touchpanel
+  proc_sched_energy_aware
 }:{
   file
   lnk_file
