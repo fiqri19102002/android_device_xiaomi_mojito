@@ -93,6 +93,12 @@ Power::Power(std::shared_ptr<HintManager> hm)
     LOG(INFO) << "PowerHAL ready to take hints, Adpf update rate: " << mAdpfRateNs;
 }
 
+void endAllHints(std::shared_ptr<HintManager> mHintManager) {
+    for (std::string hint: mHintManager->GetHints()) {
+        mHintManager->EndHint(hint);
+    }
+}
+
 ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
     LOG(DEBUG) << "Power setMode: " << toString(type) << " to: " << enabled;
     ATRACE_INT(toString(type).c_str(), enabled);
@@ -100,9 +106,12 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
     switch (type) {
         case Mode::SUSTAINED_PERFORMANCE:
             if (enabled) {
+                endAllHints(mHintManager);
                 mHintManager->DoHint("SUSTAINED_PERFORMANCE");
+            } else {
+                mHintManager->EndHint("SUSTAINED_PERFORMANCE");
             }
-            mSustainedPerfModeOn = true;
+            mSustainedPerfModeOn = enabled;
             break;
         case Mode::DOUBLE_TAP_TO_WAKE: {
             int fd = open(TOUCH_DEV_PATH, O_RDWR);
@@ -111,9 +120,6 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
             break;
         }
         case Mode::LAUNCH:
-            if (mSustainedPerfModeOn) {
-                break;
-            }
             [[fallthrough]];
         case Mode::FIXED_PERFORMANCE:
             [[fallthrough]];
@@ -128,6 +134,9 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
         case Mode::AUDIO_STREAMING_LOW_LATENCY:
             [[fallthrough]];
         default:
+            if (mSustainedPerfModeOn) {
+                break;
+            }
             if (enabled) {
                 mHintManager->DoHint(toString(type));
             } else {
