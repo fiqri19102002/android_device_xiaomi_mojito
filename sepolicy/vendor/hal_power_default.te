@@ -26,6 +26,10 @@ allow hal_power_default {
   lnk_file
 } rw_file_perms;
 
+# Allow hal_power_default to read and write to KProfiles nodes
+allow hal_power_default sysfs_kprofiles:dir r_dir_perms;
+allow hal_power_default sysfs_kprofiles:file rw_file_perms;
+
 allow hal_power_default vendor_latency_device:chr_file rw_file_perms;
 allow hal_power_default touchfeature_device:chr_file rw_file_perms;
 
