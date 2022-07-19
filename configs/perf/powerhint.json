@@ -225,7 +225,7 @@
     {
       "PowerHint": "LAUNCH",
       "Node": "EnergyAware",
-      "Duration": 3000,
+      "Duration": 2000,
       "Value": "0"
     },
     {
