@@ -44,6 +44,8 @@
 
 #define Touch_Doubletap_Mode 14
 
+#define KPROFILES_NODE "/sys/module/kprofiles/parameters/kp_mode"
+
 namespace aidl {
 namespace google {
 namespace hardware {
@@ -52,6 +54,7 @@ namespace impl {
 namespace pixel {
 
 using ::aidl::google::hardware::power::impl::pixel::PowerHintSession;
+using ::android::base::WriteStringToFile;
 
 constexpr char kPowerHalStateProp[] = "vendor.powerhal.state";
 constexpr char kPowerHalAudioProp[] = "vendor.powerhal.audio";
@@ -119,6 +122,9 @@ ndk::ScopedAStatus Power::setMode(Mode type, bool enabled) {
             ioctl(fd, TOUCH_IOC_SETMODE, &arg);
             break;
         }
+        case Mode::LOW_POWER:
+            WriteStringToFile(enabled ? "1" : "0", KPROFILES_NODE, true);
+            break;
         case Mode::LAUNCH:
             [[fallthrough]];
         case Mode::FIXED_PERFORMANCE:
@@ -153,6 +159,9 @@ ndk::ScopedAStatus Power::isModeSupported(Mode type, bool *_aidl_return) {
 
     switch(type) {
         case Mode::DOUBLE_TAP_TO_WAKE:
+            supported = true;
+            break;
+        case Mode::LOW_POWER:
             supported = true;
             break;
         default:
