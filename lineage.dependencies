@@ -1,8 +1,4 @@
 [
- {
-   "repository"  : "hardware_xiaomi",
-   "target_path" : "hardware/xiaomi"
- },
   {
    "repository"  : "kernel_xiaomi_mojito",
    "target_path" : "kernel/xiaomi/mojito"
